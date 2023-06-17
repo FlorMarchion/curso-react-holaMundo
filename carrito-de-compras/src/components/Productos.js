@@ -17,14 +17,14 @@ class Productos extends Component {
         //Desestructuro las propiedades que van a venir de Productos y del meto de agregar al carrito
         const { productos, agregarAlCarrito } = this.props
         return (
-           <div style={styles.productos}>
-            {productos.map(producto =>   
-            <Producto
-            agregarAlCarrito={agregarAlCarrito}
-            key={producto.name}
-            producto={producto}
-            />)}
-           </div>
+            <div style={styles.productos}>
+                {productos.map(producto =>
+                    <Producto
+                        agregarAlCarrito={agregarAlCarrito}
+                        key={producto.name}
+                        producto={producto}
+                    />)}
+            </div>
         )
     }
 
