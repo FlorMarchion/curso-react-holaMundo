@@ -27,6 +27,20 @@ const useContador = (inicial) => {
 
 }
 
+/* ¿Cómo hago para desuscribirme de algún efecto que haya creado ? */
+
+const Interval = ({contador}) => {
+    useEffect(()=>{
+        const i = setInterval(()=>console.log(contador), 1000)
+        //retorno una funcion que ejecuta cuando se vuelve a ejecutar el useEffect (en este caso el intervalo es el contador):
+        return () => clearInterval(i) //el argumento es el valor que devuelve setInterval.
+    }, [contador])
+    return (
+        <p>Intervalo</p>
+    )
+        /*La desuscripción es util por ejemplo cuando utilizamos webSocket y necesitamos dejar de hacer esa petición.*/
+}
+
 const App = () => {
     const [contador, incrementar] = useContador(0)//se otorga el valor inicial
     useEffect(()=>{
@@ -37,8 +51,14 @@ const App = () => {
         <div>
             Contador:{contador}
             <button onClick={incrementar}>Incrementar</button>
+            <Interval contador={contador}/>
         </div>
     )
 }
+
+
+
+
+
 
 export default App;
