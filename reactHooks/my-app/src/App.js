@@ -1,6 +1,7 @@
 //----> useRef <------
 
 //Nos permite obtener referencias dentro del mismo DOM
+// Con Ref es como si estuviésemos accediendo a los elementos HTML con document.getElementById.  
 
 import { useRef } from "react";
 
@@ -10,7 +11,7 @@ const App = () => {
     const ref = useRef()
     const inputRef = useRef()
     const click = () => {
-        console.log(ref.current.clientHeight)
+        console.log(ref.current.clientHeight) // Este es un ejemplo de como acceder a la altura
         ref.current.innerHTML = 'Cahnchito Feliz'
     }
     const focus = () => {
