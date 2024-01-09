@@ -1,85 +1,41 @@
-import { Component, useState, useEffect } from "react"
-/*
+import { useReducer, useState } from "react";
 
-----UseEffect-----
+//Estructura de datos que va tener la aplicación.
 
-Genera efectos laterales en nuestra aplicación, por ejemplo: actualizar el DOM, leer en DB,
-escribir en DB, conectarnos a una api. Es algo que va a efectuar un cambio dentro de nuestro componente.
+// const state ={contador : 0}
+//action = {type: 'string', payload: any}
 
-En el siguiente ejemplo voy a actualizar el título de la app.
+const inicial = { contador: 0 }
 
-Sintaxis del useEffect:
-useEffect(() => {}, [])
+const reducer = (state, action) => {
+    switch (action.type) { //Evaluo el valor que contiene type, mediante el switch
+        case 'incrementar': //pregunto si el caso es del tipo "incrementar" ...
+            console.log('STATE CONTADOR', state.contador)
 
-Explicación:
-useEffect((funcion) => {lógica que va a ejecutar}, [Dependencias que necesita para poder funcionar])
-
-Si no colocamos el segundo argumento [], el useEffect se ejecutará simpre que haya algún cambio dentro del componente.
-
-*/
-
-const useContador = (inicial) => {
-    const [contador, setContador] = useState(inicial) //le paso el valor inicial del parametro de useCOntador
-    const incrementar = () => {
-        setContador(contador + 1)
+            return { contador: state.contador + 1 } // retorno el nuevo estado
+        case 'decrementar':
+            return { contador: state.contador - 1 }
+        case 'set':
+            return { contador: action.payload }
+        default: return state;
     }
-    return [contador, incrementar]
-
-}
-
-/* ¿Cómo hago para desuscribirme de algún efecto que haya creado ? */
-
-const Interval = ({ contador }) => {
-    useEffect(() => {
-        const i = setInterval(() => console.log(contador), 1000)
-        //retorno una funcion que ejecuta cuando se vuelve a ejecutar el useEffect (en este caso el intervalo es el contador):
-        return () => clearInterval(i) //el argumento es el valor que devuelve setInterval.
-    }, [contador])
-    return (
-        <p>Intervalo</p>
-    )
-    /*La desuscripción es util por ejemplo cuando utilizamos webSocket y necesitamos dejar de hacer esa petición.*/
 }
 
 const App = () => {
-    const [contador, incrementar] = useContador(0)//se otorga el valor inicial
-    useEffect(() => {
-        document.title = contador;
-    }, [contador]) // entre corchetes, donde van las dependecias hago q el título de la página se actualce en base al contador.
+    const [state, dispatch] = useReducer(reducer, inicial) //El primer argumento es el reducer, el segundo argumento es el estado inicial.
+    const [valor, setValor] = useState(0);
+    //useReducer retorna un arreglo muy similar al de useState
+    //dispatch dispara eventos en el formato de las acctions {type, payload}
 
     return (
         <div>
-            Contador:{contador}
-            <button onClick={incrementar}>Incrementar</button>
-            <Interval contador={contador} />
+            Contador : {state.contador}
+            <input value={valor} onChange={e => setValor(e.target.value)} />
+            <button onClick={() => dispatch({ type: 'decrementar' })}>Menos</button>
+            <button onClick={() => dispatch({ type: 'incrementar' })}>Más</button>
+            <button onClick={() => dispatch({ type: 'set', payload: valor })}>Set</button>
         </div>
     )
-
-    //Cómo desmonto un efecto utilizando un componente de clase ? (sobre el mismo ejemplo...)
-
-    class Interval extends Component {
-        intervalo = '' //Propiedad que se encargará de obtener el identificador del intervalo. En el componente funcional lo habíamos asignado a una cost i
-
-        //Monta el efecto
-        componentDidMount() {
-            this.intervalo = setInterval(() => console.log(this.props.contador), 1000)//Asigno el intervalo que devuelve serInterval
-        }
-
-        //Desmonta el efecto
-        componentWillUnmount(){
-            clearInterval(this.intervalo)
-        }
-        render() {
-            return (
-                <p>Intervalo</p>
-            )
-        }
-    }
 }
-
-
-
-
-
 
 export default App;
